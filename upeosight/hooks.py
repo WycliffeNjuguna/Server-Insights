@@ -148,23 +148,20 @@ app_license = "mit"
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"upeosight.tasks.all"
-# 	],
-# 	"daily": [
-# 		"upeosight.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"upeosight.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"upeosight.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"upeosight.tasks.monthly"
-# 	],
-# }
+
+scheduler_events = {
+    "cron": {
+        "* * * * *": [
+            "upeosight.collectors.system.collect",
+            "upeosight.collectors.queue.collect",
+        ],
+        "*/5 * * * *": [
+            "upeosight.collectors.db_storage.collect",
+            "upeosight.collectors.database.collect",
+        ],
+    }
+}
+
 
 # Testing
 # -------
@@ -247,3 +244,10 @@ app_license = "mit"
 # List of apps whose translatable strings should be excluded from this app's translations.
 # ignore_translatable_strings_from = []
 
+
+fixtures = [
+    "Client Script",
+    "Custom Field",
+    "Workspace",
+    "Page"
+]
