@@ -42,5 +42,5 @@ You can install this app using the [bench](https://github.com/frappe/bench) CLI:
 
 ```bash
 cd $PATH_TO_YOUR_BENCH
-bench get-app git@github.com:Upeosoft-Limited/upeosight.git --branch develop
+bench get-app git@github.com:Upeosoft-Limited/upeosight.git
 bench install-app upeosight
