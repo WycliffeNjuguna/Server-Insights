@@ -9,6 +9,18 @@ frappe.pages["upeosight-control"].on_page_load = function (wrapper) {
   });
 
   const $body = $(page.body);
+
+  $(wrapper).find(".page-head").css({
+    background:
+      "linear-gradient(90deg, rgba(59,130,246,0.12), rgba(16,185,129,0.10), rgba(245,158,11,0.10))",
+    borderBottom: "1px solid rgba(15,23,42,0.08)",
+  });
+  $(wrapper).find(".page-title .title-text").css({
+    fontWeight: 950,
+    letterSpacing: "-0.02em",
+  });
+
+
   $body.addClass("upeosight-root");
 
   // -----------------------------
@@ -17,135 +29,243 @@ frappe.pages["upeosight-control"].on_page_load = function (wrapper) {
   if (!document.getElementById("upeosight-style")) {
     const style = document.createElement("style");
     style.id = "upeosight-style";
+
+
     style.innerHTML = `
-      .upeosight-root { padding-bottom: 24px; }
+    .upeosight-root{
+      padding-bottom: 24px;
+      /* soft “control center” background */
+      background:
+        radial-gradient(900px 420px at 12% 0%, rgba(59,130,246,0.10), transparent 55%),
+        radial-gradient(820px 420px at 88% 8%, rgba(16,185,129,0.10), transparent 55%),
+        radial-gradient(700px 380px at 60% 92%, rgba(245,158,11,0.10), transparent 55%),
+        linear-gradient(180deg, rgba(255,255,255,1), rgba(248,250,252,1));
+    }
 
-      .upeo-glass {
-        background: rgba(255,255,255,0.70);
-        border: 1px solid rgba(255,255,255,0.42);
-        border-radius: 16px;
-        backdrop-filter: blur(14px);
-        -webkit-backdrop-filter: blur(14px);
-        box-shadow: 0 14px 40px rgba(0,0,0,0.07);
-      }
+    /* ===== Theme tokens ===== */
+    :root{
+      --upeo-blue: #3b82f6;
+      --upeo-green:#10b981;
+      --upeo-amber:#f59e0b;
+      --upeo-violet:#6366f1;
+      --upeo-red:  #ef4444;
 
-      .upeo-section { position: relative; overflow: hidden; }
-      .upeo-section:before {
-        content: "";
-        position: absolute;
-        inset: 0;
-        opacity: 0.50;
-        pointer-events: none;
-        background: radial-gradient(circle at 20% 10%, rgba(0,0,0,0.055), transparent 58%);
-      }
+      --upeo-ink: #0f172a;
+      --upeo-muted: rgba(15,23,42,0.62);
+    }
 
-      .upeo-accent { height: 3px; border-radius: 999px; margin-bottom: 12px; background: rgba(0,0,0,0.10); }
-      .upeo-accent.health { background: rgba(16,185,129,0.33); }
-      .upeo-accent.tables { background: rgba(59,130,246,0.28); }
-      .upeo-accent.actions{ background: rgba(245,158,11,0.25); }
-      .upeo-accent.audit  { background: rgba(99,102,241,0.22); }
+    .upeo-glass{
+      background: rgba(255,255,255,0.74);
+      border: 1px solid rgba(15,23,42,0.08);
+      border-radius: 18px;
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow:
+        0 18px 48px rgba(2,6,23,0.08),
+        0 1px 0 rgba(255,255,255,0.55) inset;
+    }
 
-      .upeo-fade-in { animation: upeoFade .22s ease-out; }
-      @keyframes upeoFade { from {opacity:.55; transform:translateY(8px)} to {opacity:1; transform:translateY(0)} }
+    .upeo-section{ position: relative; overflow: hidden; }
+    .upeo-section:before{
+      content:"";
+      position:absolute;
+      inset:0;
+      opacity: 0.70;
+      pointer-events:none;
+      background:
+        radial-gradient(circle at 20% 10%, rgba(15,23,42,0.05), transparent 60%),
+        radial-gradient(circle at 90% 20%, rgba(59,130,246,0.06), transparent 58%);
+    }
 
-      .upeo-header { display:flex; align-items:flex-start; justify-content:space-between; gap: 12px; margin-bottom: 12px; }
-      .upeo-title { font-weight: 850; font-size: 16px; }
-      .upeo-subtle { color:#6b7280; font-size:12px; line-height: 1.35; }
+    /* ===== Accents: now actually colorful ===== */
+    .upeo-accent{ height: 4px; border-radius: 999px; margin-bottom: 12px; }
+    .upeo-accent.health{
+      background: linear-gradient(90deg, rgba(16,185,129,0.95), rgba(59,130,246,0.85));
+    }
+    .upeo-accent.tables{
+      background: linear-gradient(90deg, rgba(59,130,246,0.95), rgba(99,102,241,0.85));
+    }
+    .upeo-accent.actions{
+      background: linear-gradient(90deg, rgba(245,158,11,0.95), rgba(239,68,68,0.80));
+    }
+    .upeo-accent.audit{
+      background: linear-gradient(90deg, rgba(99,102,241,0.95), rgba(16,185,129,0.80));
+    }
 
-      .upeo-kpi { font-size: 22px; font-weight: 850; line-height: 1.0; letter-spacing: -0.02em; }
-      .upeo-kpi-label { font-size: 12px; color:#6b7280; margin-top: 6px; display:flex; align-items:center; gap:8px; }
+    .upeo-fade-in{ animation: upeoFade .22s ease-out; }
+    @keyframes upeoFade{ from{opacity:.55; transform:translateY(8px)} to{opacity:1; transform:translateY(0)} }
 
-      .upeo-pill {
-        display:inline-flex; align-items:center; gap:8px;
-        padding: 6px 10px; border-radius: 999px;
-        font-weight: 750; font-size: 12px;
-        background: rgba(0,0,0,0.04);
-      }
-      .upeo-dot { width:10px; height:10px; border-radius:999px; display:inline-block; }
-      .upeo-dot.green { background:#16a34a; }
-      .upeo-dot.yellow { background:#f59e0b; }
-      .upeo-dot.red { background:#dc2626; }
+    .upeo-header{ display:flex; align-items:flex-start; justify-content:space-between; gap: 12px; margin-bottom: 12px; }
+    .upeo-title{ font-weight: 900; font-size: 16px; color: var(--upeo-ink); }
+    .upeo-subtle{ color: var(--upeo-muted); font-size:12px; line-height: 1.35; }
 
-      .upeo-skeleton {
-        background: linear-gradient(90deg, rgba(0,0,0,0.04), rgba(0,0,0,0.085), rgba(0,0,0,0.04));
-        background-size: 200% 100%;
-        animation: upeoShimmer 1.15s infinite;
-        border-radius: 12px;
-      }
-      @keyframes upeoShimmer { 0% {background-position: 200% 0} 100% {background-position: -200% 0} }
+    /* KPI more “hero” */
+    .upeo-kpi{
+      font-size: 24px;
+      font-weight: 950;
+      line-height: 1.0;
+      letter-spacing: -0.03em;
+      color: var(--upeo-ink);
+    }
+    .upeo-kpi-label{
+      font-size: 12px;
+      color: var(--upeo-muted);
+      margin-top: 6px;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
 
-      .upeo-card-pad { padding: 16px; }
-      .upeo-divider { height:1px; background: rgba(0,0,0,0.06); margin: 12px 0; }
+    /* Pills: subtle tint + clearer hierarchy */
+    .upeo-pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-weight: 850;
+      font-size: 12px;
+      border: 1px solid rgba(15,23,42,0.08);
+      background: rgba(255,255,255,0.65);
+    }
 
-      .upeo-table thead th { font-size: 12px; color:#6b7280; background: rgba(0,0,0,0.02); }
-      .upeo-table td { vertical-align: top; }
+    .upeo-dot{ width:10px; height:10px; border-radius:999px; display:inline-block; }
+    .upeo-dot.green{ background: var(--upeo-green); box-shadow: 0 0 0 4px rgba(16,185,129,0.14); }
+    .upeo-dot.yellow{ background: var(--upeo-amber); box-shadow: 0 0 0 4px rgba(245,158,11,0.14); }
+    .upeo-dot.red{ background: var(--upeo-red); box-shadow: 0 0 0 4px rgba(239,68,68,0.14); }
 
-      .upeo-btn { border-radius: 12px !important; font-weight: 750 !important; }
-      .upeo-badge {
-        font-size: 11px; font-weight: 750;
-        padding: 4px 10px; border-radius: 999px;
-        background: rgba(0,0,0,0.05);
-      }
-      .upeo-muted { color:#6b7280; }
+    .upeo-skeleton{
+      background: linear-gradient(90deg, rgba(15,23,42,0.04), rgba(15,23,42,0.09), rgba(15,23,42,0.04));
+      background-size: 200% 100%;
+      animation: upeoShimmer 1.15s infinite;
+      border-radius: 12px;
+    }
+    @keyframes upeoShimmer{ 0%{background-position:200% 0} 100%{background-position:-200% 0} }
 
-      .upeo-toast { display:none; position: sticky; top: 0; z-index: 5; margin-bottom: 12px; }
+    .upeo-card-pad{ padding: 16px; }
+    .upeo-divider{ height:1px; background: rgba(15,23,42,0.08); margin: 12px 0; }
 
-      /* -----------------------------
-         Premium tooltip system
-         ----------------------------- */
-      .upeo-tip-btn{
-        width: 18px; height: 18px; border-radius: 999px;
-        display:inline-flex; align-items:center; justify-content:center;
-        background: rgba(0,0,0,0.06);
-        border: 1px solid rgba(0,0,0,0.06);
-        color: rgba(0,0,0,0.55);
-        font-size: 12px;
-        cursor: pointer;
-        user-select: none;
-        transition: transform .12s ease, background .12s ease;
-      }
-      .upeo-tip-btn:hover { transform: translateY(-1px); background: rgba(0,0,0,0.08); }
+    /* Tables: cleaner header + hover */
+    .upeo-table{
+      border-color: rgba(15,23,42,0.10) !important;
+    }
+    .upeo-table thead th{
+      font-size: 12px;
+      color: rgba(15,23,42,0.65);
+      background:
+        linear-gradient(180deg, rgba(59,130,246,0.06), rgba(99,102,241,0.03));
+      border-color: rgba(15,23,42,0.10) !important;
+    }
+    .upeo-table td{
+      vertical-align: top;
+      border-color: rgba(15,23,42,0.08) !important;
+    }
+    .upeo-table tbody tr:hover{
+      background: rgba(59,130,246,0.045);
+    }
 
-      .upeo-tooltip {
-        position: fixed;
-        z-index: 9999;
-        width: min(360px, calc(100vw - 24px));
-        padding: 12px 12px;
-        border-radius: 14px;
-        background: rgba(18,18,18,0.86);
-        color: rgba(255,255,255,0.92);
-        border: 1px solid rgba(255,255,255,0.12);
-        box-shadow: 0 18px 60px rgba(0,0,0,0.30);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
-        display: none;
-        animation: upeoTipIn .14s ease-out;
-      }
-      @keyframes upeoTipIn { from {opacity:.0; transform: translateY(6px)} to {opacity:1; transform: translateY(0)} }
+    /* Buttons: premium but readable */
+    .upeo-btn{
+      border-radius: 12px !important;
+      font-weight: 850 !important;
+      border: 1px solid rgba(15,23,42,0.10) !important;
+      box-shadow: 0 10px 22px rgba(2,6,23,0.08);
+      transition: transform .12s ease, box-shadow .12s ease;
+    }
+    .upeo-btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(2,6,23,0.10);
+    }
 
-      .upeo-tip-title { font-weight: 850; font-size: 13px; margin-bottom: 6px; }
-      .upeo-tip-text { font-size: 12px; line-height: 1.35; color: rgba(255,255,255,0.88); }
-      .upeo-tip-bands { margin-top: 8px; display:flex; flex-direction: column; gap: 6px; }
-      .upeo-tip-band { display:flex; align-items:flex-start; gap: 8px; }
-      .upeo-tip-tag {
-        font-size: 11px; font-weight: 800;
-        padding: 2px 8px; border-radius: 999px;
-        background: rgba(255,255,255,0.10);
-        white-space: nowrap;
-        margin-top: 1px;
-      }
-      .upeo-tip-actions { margin-top: 10px; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.12); }
-      .upeo-tip-actions b { color: rgba(255,255,255,0.95); }
-      .upeo-tip-close {
-        position:absolute; top: 10px; right: 10px;
-        width: 22px; height: 22px; border-radius: 999px;
-        display:inline-flex; align-items:center; justify-content:center;
-        background: rgba(255,255,255,0.10);
-        cursor:pointer;
-        font-size: 12px;
-        color: rgba(255,255,255,0.9);
-      }
-    `;
+    /* Primary buttons: gradient */
+    .btn.btn-primary.upeo-btn{
+      background: linear-gradient(90deg, rgba(59,130,246,1), rgba(99,102,241,1)) !important;
+      color: #fff !important;
+    }
+
+    /* Warning (cleanup) button: amber gradient */
+    .btn.btn-warning.upeo-btn{
+      background: linear-gradient(90deg, rgba(245,158,11,1), rgba(239,68,68,0.95)) !important;
+      color: #111827 !important;
+    }
+
+    .upeo-badge{
+      font-size: 11px;
+      font-weight: 900;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.05);
+      border: 1px solid rgba(15,23,42,0.08);
+      color: rgba(15,23,42,0.75);
+    }
+    .upeo-muted{ color: var(--upeo-muted); }
+
+    .upeo-toast{ display:none; position: sticky; top: 0; z-index: 5; margin-bottom: 12px; }
+
+    /* ===== Tooltips: keep your premium tooltip, just polish text tone ===== */
+    .upeo-tip-btn{
+      width: 18px; height: 18px; border-radius: 999px;
+      display:inline-flex; align-items:center; justify-content:center;
+      background: rgba(59,130,246,0.10);
+      border: 1px solid rgba(59,130,246,0.14);
+      color: rgba(37,99,235,0.85);
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: transform .12s ease, background .12s ease;
+    }
+    .upeo-tip-btn:hover{
+      transform: translateY(-1px);
+      background: rgba(59,130,246,0.14);
+    }
+
+    .upeo-tooltip{
+      position: fixed;
+      z-index: 9999;
+      width: min(360px, calc(100vw - 24px));
+      padding: 12px 12px;
+      border-radius: 14px;
+      background: rgba(15,23,42,0.90);
+      color: rgba(255,255,255,0.94);
+      border: 1px solid rgba(255,255,255,0.10);
+      box-shadow: 0 18px 60px rgba(0,0,0,0.30);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      display: none;
+      animation: upeoTipIn .14s ease-out;
+    }
+    @keyframes upeoTipIn{ from{opacity:0; transform: translateY(6px)} to{opacity:1; transform: translateY(0)} }
+
+    .upeo-tip-title{ font-weight: 900; font-size: 13px; margin-bottom: 6px; }
+    .upeo-tip-text{ font-size: 12px; line-height: 1.35; color: rgba(255,255,255,0.88); }
+    .upeo-tip-bands{ margin-top: 8px; display:flex; flex-direction: column; gap: 6px; }
+    .upeo-tip-band{ display:flex; align-items:flex-start; gap: 8px; }
+    .upeo-tip-tag{
+      font-size: 11px; font-weight: 950;
+      padding: 2px 8px; border-radius: 999px;
+      background: rgba(59,130,246,0.22);
+      border: 1px solid rgba(59,130,246,0.28);
+      white-space: nowrap;
+      margin-top: 1px;
+    }
+    .upeo-tip-actions{
+      margin-top: 10px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255,255,255,0.10);
+    }
+    .upeo-tip-actions b{ color: rgba(255,255,255,0.95); }
+
+    .upeo-tip-close{
+      position:absolute; top: 10px; right: 10px;
+      width: 22px; height: 22px; border-radius: 999px;
+      display:inline-flex; align-items:center; justify-content:center;
+      background: rgba(255,255,255,0.10);
+      cursor:pointer;
+      font-size: 12px;
+      color: rgba(255,255,255,0.9);
+    }
+  `;
+
+
+
     document.head.appendChild(style);
   }
 
