@@ -246,8 +246,8 @@ scheduler_events = {
 
 
 fixtures = [
-    "Client Script",
-    "Custom Field",
-    "Workspace",
-    "Page"
+    {"dt": "Client Script", "filters": [["name", "like", "%upeo%"]]},
+    {"dt": "Custom Field", "filters": [["name", "like", "%upeo%"]]},
+    # {"dt": "Workspace", "filters": [["name", "like", "%upeo%"]]},
+    {"dt": "Page", "filters": [["name", "like", "%upeo%"]]},
 ]
